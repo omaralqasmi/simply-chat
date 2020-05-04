@@ -1,14 +1,21 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import UserSelection from "../views/UserSelection.vue";
+import ListOfChats from "../views/ListOfChats.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    name: "UserSelection",
+    component: UserSelection,
+  },
+  {
+    path: "/select-chat",
+    name: "ListOfChats",
+    component: ListOfChats,
+    props: true
   },
   {
     path: "/about",
