@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import UserSelection from "../views/UserSelection.vue";
 import ListOfChats from "../views/ListOfChats.vue";
 import Chat from "../views/Chat.vue";
+import ListOfContacts from "../views/ListOfContacts.vue";
 
 Vue.use(VueRouter);
 
@@ -10,7 +11,8 @@ const routes = [
   {
     path: "/",
     name: "UserSelection",
-    component: UserSelection
+    component: UserSelection,
+    props: true
   },
   {
     path: "/select-chat",
@@ -22,6 +24,12 @@ const routes = [
     path: "/chat",
     name: "Chat",
     component: Chat,
+    props: true
+  },
+  {
+    path: "/ListOfContacts",
+    name: "ListOfContacts",
+    component: ListOfContacts,
     props: true
   },
   {

@@ -3,10 +3,11 @@ import App from "./App.vue";
 import router from "./router";
 import vuetify from "./plugins/vuetify";
 import { db } from "./firebase/init.js";
-
+Vue.use(require("vue-moment"));
 Vue.config.productionTip = false;
 let app = null;
-db.collection('users').get()
+db.collection("users")
+  .get()
   .then(() => {
     if (!app) {
       app = new Vue({
@@ -16,6 +17,6 @@ db.collection('users').get()
       }).$mount("#app");
     }
   })
-  .catch((err) => {
-    console.log('Error getting documents', err);
-  })
+  .catch(err => {
+    console.log("Error getting documents", err);
+  });
