@@ -143,7 +143,8 @@ export default {
 }
 .messages {
   position: relative;
-  top: 10px;
+  top: 20px;
+  margin-top: 20px;
   bottom: 130px;
   margin-bottom: 130px;
 }

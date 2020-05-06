@@ -25,7 +25,13 @@ export default {
   props: {
     appHUD: null
   },
-
+mounted(){
+  this.contacts = UserModel.fetchAll()
+  this.contacts = this.contacts.filter(cont => {
+    if (cont.id != UserModel.getSelectedUserID())
+    return cont
+  })
+},
   methods: {
     selectChat(id) {
       console.log(id);
