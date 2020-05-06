@@ -32,7 +32,8 @@
 
 <script>
 import UserModel from "@/model/User.js";
-import { db } from "@/firebase/init.js";
+// import { db } from "@/firebase/init.js";
+import axios from 'axios'
 
 export default {
   name: "UserSelection",
@@ -54,26 +55,45 @@ export default {
     },
     getUsers() {
       UserModel.removeAll();
+      axios.get('http://localhost:3000/user/get')
+        .then(response => {
+          // handle success
+          console.log(response.data)
+          response.data.forEach(element => {
+                  const newUser = new UserModel();
+                  newUser.id = element.id;
+                  newUser.name = element.name;
+                  newUser.image = element.image;
+                  newUser.save();
 
-      db.collection("users")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            console.log(doc.id, "=>", doc.data());
-            const newUser = new UserModel();
-            newUser.id = doc.id;
-            newUser.name = doc.data().name;
-            newUser.image = doc.data().image;
-            newUser.save();
-            // this.listOfUsers.push({id: doc.id, name: doc.data().name, image: doc.data().image})
-          });
-          this.listOfUsers = UserModel.fetchAll();
-              this.appHUD.loading = false
+          })
+                this.listOfUsers = UserModel.fetchAll();
+                    this.appHUD.loading = false
 
         })
-        .catch(err => {
-          console.log("Error getting documents", err);
-        });
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+      // db.collection("users")
+      //   .get()
+      //   .then(snapshot => {
+      //     snapshot.forEach(doc => {
+      //       console.log(doc.id, "=>", doc.data());
+      //       const newUser = new UserModel();
+      //       newUser.id = doc.id;
+      //       newUser.name = doc.data().name;
+      //       newUser.image = doc.data().image;
+      //       newUser.save();
+      //       // this.listOfUsers.push({id: doc.id, name: doc.data().name, image: doc.data().image})
+      //     });
+      //     this.listOfUsers = UserModel.fetchAll();
+      //         this.appHUD.loading = false
+
+      //   })
+      //   .catch(err => {
+      //     console.log("Error getting documents", err);
+      //   });
     }
   },
   data() {

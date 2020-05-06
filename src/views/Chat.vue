@@ -56,7 +56,8 @@
 <script>
 import UserModel from "@/model/User.js";
 import ChatModel from "@/model/Chat.js";
-import { db } from "@/firebase/init.js";
+// import { db } from "@/firebase/init.js";
+import axios from "axios"
 
 export default {
   name: "Chat",
@@ -80,33 +81,56 @@ export default {
 
   methods: {
     submitNewMsg() {
-      console.log("new msg");
-      this.showTextBox = false;
-      this.appHUD.loadingTxt = "Sending...";
-      this.appHUD.loading = true;
-      // Add a new document with a generated id.
-      let docRef = db.collection("chats").doc();
+      console.log("new msg")
+      this.showTextBox = false
+      this.appHUD.loadingTxt = "Sending..."
+      this.appHUD.loading = true
+      // // Add a new document with a generated id.
+      // let docRef = db.collection("chats").doc()
+      // let data = {
+      //   text: this.Field_1,
+      //   senderid: this.from,
+      //   receiverid: this.to,
+      //   date: new Date().toUTCString(),
+      //   id: docRef.id
+      // }
       let data = {
         text: this.Field_1,
         senderid: this.from,
         receiverid: this.to,
         date: new Date().toUTCString(),
-        id: docRef.id
-      };
-      this.Field_1 = "";
-      this.Valid = true;
+      }
 
-      db.collection("chats")
-        .doc(docRef.id)
-        .set(data)
-        .then(() => {
-          console.log("saved");
-          this.appHUD.loading = false;
-          this.appHUD.snackbar = true;
-          this.appHUD.snackbarTxt = "Sent !";
-          this.messages.push(data);
-          this.showTextBox = true;
-        });
+      this.Field_1 = ""
+      this.Valid = true
+
+      // db.collection("chats")
+      //   .doc(docRef.id)
+      //   .set(data)
+      //   .then(() => {
+      //     console.log("saved")
+      //     this.appHUD.loading = false
+      //     this.appHUD.snackbar = true
+      //     this.appHUD.snackbarTxt = "Sent !"
+      //     this.messages.push(data)
+      //     this.showTextBox = true
+      //   })
+
+      axios.post('http://localhost:3000/chat/post', data)
+      .then(response => {
+        console.log(response)
+        console.log("saved")
+        this.appHUD.loading = false
+        this.appHUD.snackbar = true
+        this.appHUD.snackbarTxt = "Sent !"
+        this.messages.push(data)
+        this.showTextBox = true
+
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+        
     }
   },
 
@@ -148,12 +172,4 @@ export default {
   bottom: 130px;
   margin-bottom: 130px;
 }
-// userid ->
-//         chats ->
-//                 userid ->
-//                     messages ->
-//                         id
-//                         date
-//                         message
-//                         from : userid
 </style>

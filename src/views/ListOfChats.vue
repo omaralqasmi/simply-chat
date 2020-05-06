@@ -33,7 +33,9 @@
 <script>
 import UserModel from "@/model/User.js";
 import ChatModel from "@/model/Chat.js";
-import { db } from "@/firebase/init.js";
+// import { db } from "@/firebase/init.js";
+import axios from "axios"
+
 
 export default {
   name: "ListOfChats",
@@ -64,38 +66,74 @@ export default {
     getChats() {
       ChatModel.removeAllChats();
       ChatModel.removeAllConversations();
-      db.collection("chats")
-        .get()
-        .then(snapshot => {
-          snapshot.forEach(doc => {
-            console.log(doc.id, "=>", doc.data());
+
+      axios.get('http://localhost:3000/chat/get')
+        .then(response => {
+          // handle success
+          console.log(response.data)
+          response.data.forEach(element => {
             const newChat = new ChatModel();
-            newChat.id = doc.id;
-            newChat.senderid = doc.data().senderid;
-            newChat.receiverid = doc.data().receiverid;
-            newChat.text = doc.data().text;
-            newChat.date = doc.data().date;
+            newChat.id = element.id;
+            newChat.senderid = element.senderid;
+            newChat.receiverid = element.receiverid;
+            newChat.text = element.text;
+            newChat.date = element.date;
             newChat.save();
-          });
+
+          })
           this.chats = ChatModel.fetchAll();
           this.chats = this.chats.filter(chat => {
-            if (
-              chat.senderid == UserModel.getSelectedUserID() ||
-              chat.receiverid == UserModel.getSelectedUserID()
-            )
-              return chat;
-          });
-          ChatModel.replace(this.chats);
+          if (
+            chat.senderid == UserModel.getSelectedUserID() ||
+            chat.receiverid == UserModel.getSelectedUserID()
+          )
+            return chat
+          })
+          ChatModel.replace(this.chats)
           this.conversations = ChatModel.getConversations(
             UserModel.getSelectedUserID(),
             this.users
           )
-    this.appHUD.loading = false
+          this.appHUD.loading = false
 
         })
-        .catch(err => {
-          console.log("Error getting documents", err);
-        });
+        .catch(function (error) {
+          // handle error
+          console.log(error)
+        })
+
+      // db.collection("chats")
+      //   .get()
+      //   .then(snapshot => {
+      //     snapshot.forEach(doc => {
+      //       console.log(doc.id, "=>", doc.data());
+      //       const newChat = new ChatModel();
+      //       newChat.id = doc.id;
+      //       newChat.senderid = doc.data().senderid;
+      //       newChat.receiverid = doc.data().receiverid;
+      //       newChat.text = doc.data().text;
+      //       newChat.date = doc.data().date;
+      //       newChat.save();
+      //     });
+      //     this.chats = ChatModel.fetchAll();
+      //     this.chats = this.chats.filter(chat => {
+      //     if (
+      //       chat.senderid == UserModel.getSelectedUserID() ||
+      //       chat.receiverid == UserModel.getSelectedUserID()
+      //     )
+      //       return chat;
+      //     })
+      //     ChatModel.replace(this.chats);
+      //     this.conversations = ChatModel.getConversations(
+      //       UserModel.getSelectedUserID(),
+      //       this.users
+      //     )
+      //     this.appHUD.loading = false
+
+      //   })
+      //   .catch(err => {
+      //     console.log("Error getting documents", err);
+      //   });
     }
   },
   data() {
